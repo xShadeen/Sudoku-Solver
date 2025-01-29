@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table.sudoku {
+            margin: 0 auto;
+            border: 3px solid black;
+            border-collapse: collapse;
+        }
+        table.sudoku td {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            border: 1px solid gray;
+        }
+        table.sudoku tr:nth-child(3n) td {
+            border-bottom: 3px solid black;
+        }
+        table.sudoku td:nth-child(3n) {
+            border-right: 3px solid black;
+        }
+        table.sudoku tr:first-child td {
+            border-top: 3px solid black;
+        }
+        table.sudoku td:first-child {
+            border-left: 3px solid black;
+        }
+        td.empty {
+            background-color: #f0f0f0;
+            color: gray;
+        }
+        #solution {
+            display: none; /* Ukrycie rozwiązania początkowo */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sudoku Solver</h1>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <label for="sudoku_file">Upload txt file with sudoku board:</label><br><br>
+
+        <!-- Niestandardowy przycisk do wyboru pliku -->
+        <div style="display: inline-block; position: relative;">
+            <button type="button" onclick="document.getElementById('sudoku_file').click()">Choose File</button>
+            <span id="file-chosen">No file chosen</span>
+        </div>
+
+        <!-- Ukryte pole input -->
+        <input type="file" id="sudoku_file" name="sudoku_file" accept=".txt" style="display: none;" onchange="updateFileName()"><br><br>
+
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        // Funkcja do aktualizacji nazwy wybranego pliku
+        function updateFileName() {
+            const fileInput = document.getElementById('sudoku_file');
+            const fileName = fileInput.files[0] ? fileInput.files[0].name : 'No file chosen';
+            document.getElementById('file-chosen').textContent = fileName;
+        }
+    </script>
+
+    {% if sudoku %}
+        <h2>Sudoku:</h2>
+        <table class="sudoku">
+            {% for row in sudoku %}
+                <tr>
+                    {% for cell in row %}
+                        <td class="{{ 'empty' if cell == 0 else '' }}">
+                            {{ cell if cell != 0 else '' }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <div style="text-align: center;">
+            <button onclick="showSolution()">Solve</button>
+        </div>
+
+        <div id="solution">
+            <h2>Solved sudoku:</h2>
+            <table class="sudoku">
+                {% for row in solution %}
+                    <tr>
+                        {% for cell in row %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    <script>
+        function showSolution() {
+            var solutionDiv = document.getElementById('solution');
+            solutionDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
